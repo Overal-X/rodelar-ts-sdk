@@ -2,6 +2,12 @@
   "name": "rodelar",
   "module": "index.ts",
   "type": "module",
+  "author": {
+    "name": "Overal X",
+    "email": "engineering@overal-x.org",
+    "url": "https://github.com/overal-x/rodelar-ts-sdk"
+  },
+  "version": "0.0.0",
   "devDependencies": {
     "@types/bun": "latest",
     "@types/react": "^18.3.5"
