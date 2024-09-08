@@ -7,7 +7,7 @@
     "email": "engineering@overal-x.org",
     "url": "https://github.com/overal-x/rodelar-ts-sdk"
   },
-  "version": "0.0.0",
+  "version": "0.0.1",
   "scripts": {
     "build": "bun build --outdir ./dist --minify index.ts"
   },
