@@ -8,6 +8,9 @@
     "url": "https://github.com/overal-x/rodelar-ts-sdk"
   },
   "version": "0.0.0",
+  "scripts": {
+    "build": "bun build --outdir ./dist --minify index.ts"
+  },
   "devDependencies": {
     "@types/bun": "latest",
     "@types/react": "^18.3.5"
