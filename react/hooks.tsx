@@ -69,5 +69,5 @@ export function useSubscribe<T = IMessageResponse>(
       //   }
       // }, 1000);
     };
-  }, [clientArgs.url, subscribeArgs.queue, subscribeArgs.callback]); // Dependency array ensures hook behavior based on changes to arguments
+  }, [clientArgs.url, subscribeArgs.event, subscribeArgs.callback]); // Dependency array ensures hook behavior based on changes to arguments
 }

@@ -36,13 +36,13 @@ export class RodelarClient {
     this.ws.send(
       JSON.stringify({
         action: Action.PUBLISH,
-        event: args.queue,
-        payload: args.payload,
+        event: args.event,
+        message: args.message,
       })
     );
 
     this.ws.onmessage = (ev) => {
-      if (args.queue == ev.data?.queue && ev.data?.action == Action.PUBLISH) {
+      if (args.event == ev.data?.queue && ev.data?.action == Action.PUBLISH) {
         messageId = ev.data?.message?.messageId;
       }
     };
@@ -56,16 +56,16 @@ export class RodelarClient {
     this.ws.send(
       JSON.stringify({
         action: Action.SUBSCRIBE,
-        event: args.queue,
+        event: args.event,
       })
     );
 
-    this.eventHandlers[args.queue] = (ev: MessageEvent) =>
+    this.eventHandlers[args.event] = (ev: MessageEvent) =>
       args.callback(JSON.parse(ev.data));
   }
 
-  unsubscribe(args: Pick<ISubscribeArgs, "queue">) {
-    delete this.eventHandlers[args.queue];
+  unsubscribe(args: Pick<ISubscribeArgs, "event">) {
+    delete this.eventHandlers[args.event];
   }
 
   close() {

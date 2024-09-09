@@ -5,12 +5,12 @@ const client = new RodelarClient({ url: "ws://localhost:3000/ws/" });
 await sleep(1000);
 
 client.publish({
-  queue: "test",
-  payload: "try again",
+  event: "test",
+  message: "try again",
 });
 
 client.subscribe({
-  queue: "test",
+  event: "test",
   callback(data) {
     console.log("data: ", data.message);
   },

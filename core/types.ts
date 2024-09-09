@@ -1,10 +1,10 @@
 export interface IPublishArgs {
-  queue: string;
-  payload: Record<string, string> | string | number;
+  event: string;
+  message: Record<string, string> | string | number;
 }
 
 export interface ISubscribeArgs<T = unknown> {
-  queue: string;
+  event: string;
   callback: (data: T) => void;
 }
 
