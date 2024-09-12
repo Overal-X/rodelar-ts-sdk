@@ -1,73 +1,51 @@
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useContext, useRef } from "react";
 
+import _ from "lodash";
 import {
-  RodelarClient,
   type IMessageResponse,
   type IPublishArgs,
   type ISubscribeArgs,
-  type RodelarClientArgs,
 } from "../core";
+import { RodelarContext } from "./provider";
 
-export function useRodelarClient(args: RodelarClientArgs) {
-  const clientRef = useRef<RodelarClient | null>(null);
+export function useRodelar() {
+  const client = useContext(RodelarContext);
 
-  useEffect(() => {
-    // Initialize the client
-    const client = new RodelarClient(args);
-    clientRef.current = client;
+  const hasSubscribed = useRef(false);
+  const hasUnsubscribed = useRef(false);
+  const hasPublished = useRef(false);
 
-    // Clean up by closing the client on component unmount
-    return () => {
-      client.close();
-    };
-  }, [args.url, args.apiKeyId, args.apiKey]);
-
-  return clientRef;
-}
-
-export function usePublish(args: RodelarClientArgs) {
-  const clientRef = useRodelarClient(args);
-
-  const publish = useCallback(
-    (publishArgs: IPublishArgs) => {
-      setTimeout(() => {
-        if (clientRef.current) {
-          clientRef.current.publish(publishArgs);
+  const subscribe = useCallback(
+    (args: ISubscribeArgs<IMessageResponse>) => {
+      _.delay(() => {
+        if (client && hasSubscribed.current == false) {
+          client.subscribe(args);
+          hasSubscribed.current = true;
         }
-      }, 1000);
+      }, 1_000);
     },
-    [clientRef]
+    [client]
   );
 
-  return { publish };
-}
+  const unsubscribe = useCallback(
+    (args: Pick<ISubscribeArgs, "event">) => {
+      if (client && hasUnsubscribed.current == false) {
+        client.unsubscribe({ event: args.event });
+        hasUnsubscribed.current = true;
+      }
+    },
+    [client]
+  );
 
-export function useSubscribe<T = IMessageResponse>(
-  clientArgs: RodelarClientArgs,
-  subscribeArgs: ISubscribeArgs<T>
-) {
-  const clientRef = useRef<RodelarClient | null>(null);
+  const publish = useCallback(
+    (args: IPublishArgs) => {
+      if (client && hasPublished.current == false) {
+        client.publish(args);
+        hasPublished.current = true;
+      }
+    },
+    [client]
+  );
 
-  useEffect(() => {
-    // Ensure the connection happens only once
-    if (!clientRef.current) {
-      const client = new RodelarClient(clientArgs);
-      clientRef.current = client;
-
-      setTimeout(() => {
-        // Subscribe to the WebSocket queue
-        client.subscribe(subscribeArgs);
-      }, 1000);
-    }
-
-    // Cleanup when component unmounts to close the WebSocket connection
-    return () => {
-      // setTimeout(() => {
-      //   if (clientRef.current) {
-      //     clientRef.current.close();
-      //     clientRef.current = null;
-      //   }
-      // }, 1000);
-    };
-  }, [clientArgs.url, subscribeArgs.event, subscribeArgs.callback]); // Dependency array ensures hook behavior based on changes to arguments
+  return { subscribe, unsubscribe, publish };
 }

@@ -11,6 +11,7 @@ export interface ISubscribeArgs<T = unknown> {
 export enum Action {
   SUBSCRIBE = "SUBSCRIBE",
   PUBLISH = "PUBLISH",
+  UNSUBSCRIBE = "UNSUBSCRIBE",
 }
 
 export interface IMessageResponse {

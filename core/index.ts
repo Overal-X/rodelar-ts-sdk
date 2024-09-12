@@ -5,8 +5,6 @@ import {
   type ISubscribeArgs,
 } from "./types";
 
-export * from "./types";
-
 export interface RodelarClientArgs {
   url: string;
   apiKeyId?: string;
@@ -65,6 +63,13 @@ export class RodelarClient {
   }
 
   unsubscribe(args: Pick<ISubscribeArgs, "event">) {
+    this.ws.send(
+      JSON.stringify({
+        action: Action.UNSUBSCRIBE,
+        event: args.event,
+      })
+    );
+
     delete this.eventHandlers[args.event];
   }
 
@@ -72,3 +77,5 @@ export class RodelarClient {
     this.ws.close();
   }
 }
+
+export * from "./types";
